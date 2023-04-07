@@ -1,0 +1,35 @@
+
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The <title> is inserted by Flourish -->
+
+		<!-- Link to a stylesheet, or include an inline <style> section here -->
+		
+
+		<style>
+			main.svelte-sv5zx7{text-align:center;padding:1em;max-width:240px;margin:0 auto}button.svelte-sv5zx7{padding:2rem}h1.svelte-sv5zx7{color:#ff3e00;text-transform:uppercase;font-size:4em;font-weight:100}@media(min-width: 640px){main.svelte-sv5zx7{max-width:none}}
+		</style>
+
+		<!-- mobile debug -->
+		<script src="//cdn.jsdelivr.net/npm/eruda"></script>
+		<script>eruda.init();</script>
+	</head>
+	<body>
+		<!-- If you want to start with a non-empty document, add elements here -->
+		<!-- Relative links are rewritten to refer to the files in the static directory -->
+		<div id="app">
+			<main class="svelte-sv5zx7"><p>ENV: ssr-cache</p>
+	<h1 class="svelte-sv5zx7">Hello {{ name | default("Static", true)}}!</h1>
+	<button class="svelte-sv5zx7">-</button>
+	<pre>{{ count | default(5, true)}}</pre>
+	<button class="svelte-sv5zx7">+</button>
+	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+</main>
+		</div>
+		<script defer src='/cache/main.js'></script>
+		<script>window.context = {"name":"Static","count":5}</script>;
+	</body>
+</html>
