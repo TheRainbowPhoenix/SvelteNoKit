@@ -1,15 +1,16 @@
 import './app.css'
 import App from './App.svelte'
 
+const routes = {
+  index: import('./routes/Index.svelte'),
+  items: import('./routes/Items.svelte'),
+}
 
-let app;
-
-window.update = () => {
-	app.$set({
-		name: window.context?.name || 'update',
-		count: window.context?.count || 1,
-		env: window.context?.env || "browser",
-	});
+const contexts = {
+	index: {
+		name: "Static",
+		count: 5
+	}
 }
 
 let env = "env"
@@ -19,14 +20,46 @@ if (import.meta.env.SSR) env+= " ssr"
 if (import.meta.env.MODE) env+= ` mode:${import.meta.env.MODE}`
 
 
-app = new App({
-	target: document.querySelector("#app"),
-	hydrate: true,
-	props: window.context || {
-		name: 'app_main',
-		count: 0,
-		env: env,
-	}
-});
+const resolve = name => routes[name.toLowerCase()]
 
-export default app;
+const setup = ({ el, App, props }) => {
+    new App({ target: el, props })
+}
+
+// buildHydrator
+
+let initialPage = routes['index']
+
+const el = document.querySelector("#app")
+let head = []
+const resolveComponent = name => Promise.resolve(resolve(name))
+
+// const app = await resolveComponent(initialPage.component).then(initialComponent => {
+//     return setup({
+//       el,
+//       App,
+//       props: {
+//         initialComponent,
+//         resolveComponent,
+//       },
+//     })
+//   })
+
+const app = new App({
+	target: el,
+	hydrate: true,
+	props: {
+		routes: routes,
+		resolveComponent: resolveComponent
+	}
+})
+
+// app = new App({
+// 	target: document.querySelector("#app"),
+// 	hydrate: true,
+// 	props: window.context || {
+// 		name: 'app_main',
+// 		count: 0,
+// 		env: env,
+// 	}
+// });

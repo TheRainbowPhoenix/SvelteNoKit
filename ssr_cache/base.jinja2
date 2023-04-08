@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link href="/cache/style.css" rel="stylesheet" />
+        {% block head %}
+        {% endblock %}
+
+        <style>
+        {% block style %}
+        {% endblock %}
+		</style>
+
+        {% block debug %}
+		<!-- mobile debug -->
+		<script src="//cdn.jsdelivr.net/npm/eruda"></script>
+		<script>eruda.init();</script>
+        {% endblock %}
+	</head>
+	<body>
+		<div id="app">
+            {% block body %}
+			{% endblock %}
+		</div>
+
+        <script defer src='/cache/main.js' type="module"></script>
+
+        {% block context %}
+		<script>window.context = { {{ hydrated|safe | default("...{}", true) }} }</script>;
+        {% endblock %}
+	</body>
+</html>

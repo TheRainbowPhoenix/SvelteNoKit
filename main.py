@@ -4,6 +4,7 @@ import typing
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.responses import JSONResponse
 from uvicorn import run
 from fastapi.templating import Jinja2Templates
 
@@ -52,28 +53,58 @@ async def intertia_items():
 
 
 def SSR_Template(request: Request, name: str, hydrated: dict={}, static: dict={}):
-    hydrate_ctx = ""
-    if hydrated != {}:
-        hydrate_ctx = "..." + json.dumps(hydrated)
+    if "X-Headless" in request.headers:
+        return JSONResponse(content={
+            **hydrated,
+            **static,
+            "hydrated": {
+                **hydrated,
+                "__component_name": name
+            }
+        })
+    else:
 
-    return templates_ssr.TemplateResponse("index.html", {
-        "request": request,
-        **hydrated,
-        **static,
-        "hydrated": hydrate_ctx
-    })
+        mimetypes.add_type('application/javascript', '.js')
+        mimetypes.add_type('text/css', '.css')
+        mimetypes.add_type('image/svg+xml', '.svg')
+
+        hydrate_ctx = ""
+        if hydrated != {}:
+            hydrate_ctx = "..." + json.dumps({
+                **hydrated,
+                "__component_name": name
+            })
+
+        return templates_ssr.TemplateResponse(f'{name.lower()}.html', {
+            "request": request,
+            **hydrated,
+            **static,
+            "hydrated": hydrate_ctx
+        })
 
 
 @ssr_app.get("/", response_class=HTMLResponse)
 async def ssr_index(request: Request):
-    return SSR_Template(request, "index.html", {
+    return SSR_Template(request, "Index", {
         "name": "jinja hydrated",
         "count": 8,
-    }, {
-        "name": "jinja",
-        "count": 7
-    })
+    }
+    # # Enabling this will make the SSR and Hydrated result visually differs
+    # ,{
+    #     "name": "jinja",
+    #     "count": 7
+    # }
+    )
 
+@ssr_app.get("/items", response_class=HTMLResponse)
+async def ssr_index(request: Request):
+    items = [
+        "a", "b", "c", "__init__D"
+    ]
+    return SSR_Template(request, "Items", {
+        "name": "My Stonks",
+        "items": items,
+    })
 
 @app.get("/items", response_class=HTMLResponse)
 async def read_item(request: Request):

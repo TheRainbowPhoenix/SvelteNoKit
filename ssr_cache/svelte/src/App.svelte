@@ -1,51 +1,69 @@
+<!--<script context="module">-->
+<!--    const pages = import.meta.glob('./routes/*.svelte')-->
+<!--    console.log(pages);-->
+<!--</script>-->
 
 <script>
-	import SSR_Variable from "./lib/SSR_Variable.svelte";
-	export let name = "default";
-	export let count = 1;
+    import Render from "./lib/Render.svelte";
+    import Index from "./routes/Index.svelte";
+    import Items from "./routes/Items.svelte";
+    import {onMount} from "svelte";
 
-	export let env = "svelte"
+    export let routes = {}
+    export let props = {}
+    export let pages = {}
+    export let initialPage, resolveComponent
 
-	const subs = () => {
-		count -= 1;
-	}
+    export let __component_name = "";
 
-	const add = () => {
-		count += 1;
-	}
+    let component
+
+    onMount(async () => {
+        __component_name = window.context.__component_name;
+
+
+        let cmp = routes[__component_name?.toLowerCase() || ""]
+        props = window.context;
+
+        if (cmp) {
+            component = await cmp
+        }
+        console.log(cmp)
+        console.log(component)
+
+        // let r = await Object.keys(routes).map(async (r) => await resolveComponent(r));
+
+        // console.log(r)
+    })
+
+    // $: cmp = routes[__component_name?.toLowerCase() || ""]
+    // $: cmp_props = props[__component_name?.toLowerCase() || ""] || {}
 </script>
 
-<main>
-	<p>ENV: {env}</p>
-	<h1>Hello <SSR_Variable bind:value={name} name="name" bind:env />!</h1>
-	<button on:click={subs}>-</button>
-	<pre><SSR_Variable bind:value={count} name="count" bind:env /></pre>
-	<button on:click={add}>+</button>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
+<!--{#if component}-->
+<!--    <Render component={__component_name} props={props}/>-->
+<!--{/if}-->
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+{#if __component_name === "Index"}
+    <Index {...props}/>
+{:else if __component_name === "Items"}
+    <Items {...props}/>
+{/if}
 
-	button {
-		padding: 2rem;
-	}
+<!--{#each pages as page}-->
+<!--    <p>{JSON.stringify(page)}</p>-->
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+<!--    <svelte:component this={page} {...props}>-->
+<!--    </svelte:component>-->
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>
+<!--    <Render component={page} />-->
+<!--{/each}-->
+
+<!--{#if cmp }-->
+<!--    <Render component={cmp} props={cmp_props} />-->
+<!--{:else}-->
+<!--    {#each Object.keys(routes) as r}-->
+<!--        <Render component={routes[r]} props={props[r] || {} }/>-->
+<!--    {/each}-->
+<!--{/if}-->
+

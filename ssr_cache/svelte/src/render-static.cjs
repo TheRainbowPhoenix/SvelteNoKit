@@ -8,55 +8,52 @@ const tidyOpts = {
 	wrap: 0
 }
 
-const App = require('./App.svelte').default;
-
-const ctx = {
-	name: "Static",
-	count: 5
+const routes = {
+  index: require('./routes/Index.svelte').default,
+  items: require('./routes/Items.svelte').default,
 }
 
-const { head, html, css } = App.render({
-	...ctx,
-	env: "ssr-cache"
-});
+const contexts = {
+	index: {
+		name: "Static",
+		count: 5
+	}
+}
 
-const renderedPage = `
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+console.log(" [ Generating SSR Templates ]")
 
-		<!-- Link to a stylesheet, or include an inline <style> section here -->
-		<link href="/cache/style.css" rel="stylesheet" />
-		
+for (let route of Object.keys(routes)) {
+	let ctx = contexts[route] || {}
+	const App = routes[route]
+
+	console.log(`▶ ${route} \t(${JSON.stringify(ctx)})`)
+	console.log(`  └─ ${route}.html`)
+
+	const { head, html, css } = App.render({
+		...ctx,
+		env: "ssr-cache"
+	});
+
+	const renderedPage = `
+	{% extends 'base.jinja2' %}
+	
+	{% block head %}
 		${head}
-
-		<style>
-			${css.code}
-		</style>
-
-		<!-- mobile debug -->
-		<script src="//cdn.jsdelivr.net/npm/eruda"></script>
-		<script>eruda.init();</script>
-	</head>
-	<body>
-		<!-- If you want to start with a non-empty document, add elements here -->
-		<!-- Relative links are rewritten to refer to the files in the static directory -->
-		<div id="app">
-			${html}
-		</div>
-		<script defer src='/cache/main.js'></script>
+	{% endblock %}
+	
+	{% block style %}
+		${css.code}
+	{% endblock %}
+	
+	{% block body %}
+		${html}
+	{% endblock %}
+	
+	{% block context %}
 		<script>window.context = {...${JSON.stringify(ctx)}, {{ hydrated|safe | default("...{}", true) }} }</script>;
-	</body>
-</html>
-`
+	{% endblock %}
+	`
 
-fs.writeFileSync('../index.html', renderedPage, 'utf8')
+	fs.writeFileSync(`../${route}.html`, renderedPage, 'utf8')
 
-/*
-tidy(renderedPage, tidyOpts, function(err, result) {
-	fs.writeFileSync('./index.html', result, 'utf8')
-})
-
-*/
+}

@@ -18,8 +18,8 @@ export default defineConfig({
     lib: {
       name: "template",
       entry: './src/main.ts',
-      formats: ['iife'],
-      fileName: (format, entry) => `${entry}${format == 'iife' ? '' : '.' + format}.js`,
+      formats: ['es'],
+      fileName: (format, entry) => `${entry}${format == 'es' ? '' : '.' + format}.js`,
     },
     sourcemap: true
   }
