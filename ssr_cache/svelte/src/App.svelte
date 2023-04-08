@@ -4,14 +4,15 @@
 <!--</script>-->
 
 <script>
-	import { fade, fly } from 'svelte/transition';
+    import {onMount} from "svelte";
+    import {fade, fly} from 'svelte/transition';
+
+    import store from './lib/store'
 
     import Render from "./lib/Render.svelte";
     import Index from "./routes/Index.svelte";
     import Items from "./routes/Items.svelte";
-    import {onMount} from "svelte";
-
-    import store from './lib/store'
+    import Item from "./routes/Item.svelte";
 
     export let routes = {}
     export let props = {}
@@ -67,6 +68,8 @@
                 <Index {...props}/>
             {:else if cmp === "items"}
                 <Items {...props}/>
+            {:else if cmp === "item"}
+                <Item {...props}/>
             {/if}
         </div>
     {/key}

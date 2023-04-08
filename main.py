@@ -4,9 +4,10 @@ import typing
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.exceptions import HTTPException
+from fastapi.templating import Jinja2Templates
 from starlette.responses import JSONResponse
 from uvicorn import run
-from fastapi.templating import Jinja2Templates
 
 from inertia import InertiaMiddleware, InertiaResponse
 from fastapi.middleware.gzip import GZipMiddleware
@@ -96,15 +97,68 @@ async def ssr_index(request: Request):
     # }
     )
 
+items = [{
+    "name": "first item",
+    "slug": "1",
+    "details": {
+        "price": 42,
+        "desc": "first item",
+        "tags": ["tag"]
+    }
+},{
+    "name": "second item",
+    "slug": "2",
+    "details": {
+        "price": 42,
+        "desc": "second item",
+        "tags": ["tag"]
+    }
+},{
+    "name": "third item",
+    "slug": "3",
+    "details": {
+        "price": 42,
+        "desc": "third item",
+        "tags": ["tag"]
+    }
+},{
+    "name": "__init__D",
+    "slug": "init-D",
+    "details": {
+        "price": 42,
+        "desc": "__init__D",
+        "tags": ["tag"]
+    }
+},{
+    "name": "last item",
+    "slug": "4",
+    "details": {
+        "price": 42,
+        "desc": "last item",
+        "tags": ["tag"]
+    }
+}]
+
 @ssr_app.get("/items", response_class=HTMLResponse)
 async def ssr_index(request: Request):
-    items = [
-        "first item", "second item", "third item", "__init__D", "last item"
-    ]
     return SSR_Template(request, "Items", {
         "name": "My Items list",
         "items": items,
     })
+
+
+@ssr_app.get("/items/{slug}", response_class=HTMLResponse)
+async def ssr_index(request: Request, slug: str):
+    item = next((item for item in items if item["slug"] == slug), None)
+    if item:
+        return SSR_Template(request, "Item", {
+            "name": item["name"],
+            "slug": item["slug"],
+            "details": item["details"],
+        })
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
+
 
 @app.get("/items", response_class=HTMLResponse)
 async def read_item(request: Request):

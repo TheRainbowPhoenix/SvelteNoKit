@@ -11,6 +11,7 @@ const tidyOpts = {
 const routes = {
   index: require('./routes/Index.svelte').default,
   items: require('./routes/Items.svelte').default,
+  item: require('./routes/Item.svelte').default,
 }
 
 const contexts = {
