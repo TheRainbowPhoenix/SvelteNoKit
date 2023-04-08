@@ -26,9 +26,10 @@ const renderedPage = `
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- The <title> is inserted by Flourish -->
 
 		<!-- Link to a stylesheet, or include an inline <style> section here -->
+		<link href="/cache/style.css" rel="stylesheet" />
+		
 		${head}
 
 		<style>
@@ -46,7 +47,7 @@ const renderedPage = `
 			${html}
 		</div>
 		<script defer src='/cache/main.js'></script>
-		<script>window.context = ${JSON.stringify(ctx)}</script>;
+		<script>window.context = {...${JSON.stringify(ctx)}, {{ hydrated|safe | default("...{}", true) }} }</script>;
 	</body>
 </html>
 `

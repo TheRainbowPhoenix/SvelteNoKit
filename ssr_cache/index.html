@@ -4,9 +4,10 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- The <title> is inserted by Flourish -->
 
 		<!-- Link to a stylesheet, or include an inline <style> section here -->
+		<link href="/cache/style.css" rel="stylesheet" />
+		
 		
 
 		<style>
@@ -30,6 +31,6 @@
 </main>
 		</div>
 		<script defer src='/cache/main.js'></script>
-		<script>window.context = {"name":"Static","count":5}</script>;
+		<script>window.context = {...{"name":"Static","count":5}, {{ hydrated|safe | default("...{}", true) }} }</script>;
 	</body>
 </html>

@@ -1,3 +1,6 @@
+import json
+import typing
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -45,10 +48,31 @@ async def intertia_items():
 
     return InertiaResponse({"name": "Stonks Item", "items": items}, component="Items")
 
+# =================================
+
+
+def SSR_Template(request: Request, name: str, hydrated: dict={}, static: dict={}):
+    hydrate_ctx = ""
+    if hydrated != {}:
+        hydrate_ctx = "..." + json.dumps(hydrated)
+
+    return templates_ssr.TemplateResponse("index.html", {
+        "request": request,
+        **hydrated,
+        **static,
+        "hydrated": hydrate_ctx
+    })
+
 
 @ssr_app.get("/", response_class=HTMLResponse)
 async def ssr_index(request: Request):
-    return templates_ssr.TemplateResponse("index.html", {"request": request, "name": "jinja"})
+    return SSR_Template(request, "index.html", {
+        "name": "jinja hydrated",
+        "count": 8,
+    }, {
+        "name": "jinja",
+        "count": 7
+    })
 
 
 @app.get("/items", response_class=HTMLResponse)
