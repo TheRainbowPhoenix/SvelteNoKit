@@ -13,6 +13,11 @@
 	const add = () => {
 		count += 1;
 	}
+
+	async function handle_intant_nav_click() {
+	let { get_data_back } = await import("../lib/route")
+		 await get_data_back("/ssr/items");
+	}
 </script>
 
 <main>
@@ -25,6 +30,9 @@
 
 	<div>
 		<a href="/ssr/items">Go to Items !</a>
+	</div>
+	<div>
+		<button on:click={handle_intant_nav_click}>Instant SSR Navigation</button>
 	</div>
 </main>
 

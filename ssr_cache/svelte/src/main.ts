@@ -1,6 +1,8 @@
 import './app.css'
 import App from './App.svelte'
 
+import store from './lib/store'
+
 const routes = {
   index: import('./routes/Index.svelte'),
   items: import('./routes/Items.svelte'),

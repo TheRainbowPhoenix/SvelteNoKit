@@ -2,27 +2,18 @@
 <script>
 	import SSR_Variable from "../lib/SSR_Variable.svelte";
 	import SSR_List from "../lib/SSR_List.svelte";
+	// import {goTo} from "../lib/route";
 
 	export let name = "default";
 	export let items = [];
 
 	export let env = "svelte"
 
-	async function get_data_back() {
-		try {
-			const response = await fetch("/ssr/", {
-				headers: {
-					"X-Headless": "true"
-				}
-			});
-
-			const data = await response.json();
-			console.log(data);
-		} catch (error) {
-			console.error(error);
-		}
-		console.log("TODO: swap components and router")
+	async function handle_intant_nav_click() {
+		let { get_data_back } = await import("../lib/route")
+		 await get_data_back("/ssr/");
 	}
+
 </script>
 
 <main>
@@ -35,7 +26,9 @@
 	</ul>
 	<div>
 		<a href="/ssr/">Back to SSR</a>
-		<button on:click={async () => { await get_data_back() } }>Get data from SSR</button>
+	</div>
+	<div>
+		<button on:click={handle_intant_nav_click}>Instant SSR Navigation</button>
 	</div>
 </main>
 

@@ -18,10 +18,11 @@
 	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 
 	<div><a href="/ssr/items">Go to Items !</a></div>
+	<div><button class="svelte-sv5zx7">Instant SSR Navigation</button></div>
 </main>
 	{% endblock %}
 	
 	{% block context %}
-		<script>window.context = {...{"name":"Static","count":5}, {{ hydrated|safe | default("...{}", true) }} }</script>;
+		<script>window.context = {...{"name":"Static","count":5}, {{ hydrated|safe | default("...{}", true) }} }</script>
 	{% endblock %}
 	

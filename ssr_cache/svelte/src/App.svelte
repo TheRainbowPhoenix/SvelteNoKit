@@ -9,6 +9,8 @@
     import Items from "./routes/Items.svelte";
     import {onMount} from "svelte";
 
+    import store from './lib/store'
+
     export let routes = {}
     export let props = {}
     export let pages = {}
@@ -21,9 +23,13 @@
     onMount(async () => {
         __component_name = window.context.__component_name;
 
+        $store.name = __component_name;
+
 
         let cmp = routes[__component_name?.toLowerCase() || ""]
         props = window.context;
+
+        $store.props = props;
 
         if (cmp) {
             component = await cmp
@@ -36,7 +42,15 @@
         // console.log(r)
     })
 
-    // $: cmp = routes[__component_name?.toLowerCase() || ""]
+    store.subscribe((state) => {
+        console.log(state)
+        if (state.name !== __component_name) {
+            __component_name = state.name;
+            props = state.props;
+        }
+    })
+
+    $: cmp = __component_name?.toLowerCase() || ""
     // $: cmp_props = props[__component_name?.toLowerCase() || ""] || {}
 </script>
 
@@ -44,11 +58,15 @@
 <!--    <Render component={__component_name} props={props}/>-->
 <!--{/if}-->
 
-{#if __component_name === "Index"}
-    <Index {...props}/>
-{:else if __component_name === "Items"}
-    <Items {...props}/>
+{#if cmp !== ""}
+    {#if cmp === "index"}
+        <Index {...props}/>
+    {:else if cmp === "items"}
+        <Items {...props}/>
+    {/if}
+
 {/if}
+
 
 <!--{#each pages as page}-->
 <!--    <p>{JSON.stringify(page)}</p>-->

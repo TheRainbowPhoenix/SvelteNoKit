@@ -50,7 +50,7 @@ for (let route of Object.keys(routes)) {
 	{% endblock %}
 	
 	{% block context %}
-		<script>window.context = {...${JSON.stringify(ctx)}, {{ hydrated|safe | default("...{}", true) }} }</script>;
+		<script>window.context = {...${JSON.stringify(ctx)}, {{ hydrated|safe | default("...{}", true) }} }</script>
 	{% endblock %}
 	`
 
