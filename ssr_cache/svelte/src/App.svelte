@@ -4,6 +4,8 @@
 <!--</script>-->
 
 <script>
+	import { fade, fly } from 'svelte/transition';
+
     import Render from "./lib/Render.svelte";
     import Index from "./routes/Index.svelte";
     import Items from "./routes/Items.svelte";
@@ -59,12 +61,15 @@
 <!--{/if}-->
 
 {#if cmp !== ""}
-    {#if cmp === "index"}
-        <Index {...props}/>
-    {:else if cmp === "items"}
-        <Items {...props}/>
-    {/if}
-
+    {#key cmp}
+        <div in:fly="{{ x: -50, duration: 500 }}" out:fade={{duration: 200}} class="slide">
+            {#if cmp === "index"}
+                <Index {...props}/>
+            {:else if cmp === "items"}
+                <Items {...props}/>
+            {/if}
+        </div>
+    {/key}
 {/if}
 
 
@@ -84,4 +89,13 @@
 <!--        <Render component={routes[r]} props={props[r] || {} }/>-->
 <!--    {/each}-->
 <!--{/if}-->
+
+<style>
+    .slide {
+        position: absolute;
+        top: 0px;
+        left: 0;
+        width: 100%;
+    }
+</style>
 

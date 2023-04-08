@@ -18,7 +18,7 @@
 
 <main>
 	<p>ENV: {env}</p>
-	<h1>Items <SSR_Variable bind:value={name} name="name" bind:env />!</h1>
+	<h1><SSR_Variable bind:value={name} name="name" bind:env /></h1>
 	<ul>
 		<SSR_List bind:values={items} name="items" bind:env let:item={list_item}>
 			<li>{list_item}</li>
@@ -35,13 +35,23 @@
 <style>
 	ul {
 		list-style: none;
+		display: flex;
+		flex-direction: column;
+	}
+
+	li {
+		padding: 0.5em 1em;
+		border-radius: 0.25em;
+		background: rgba(0,0,0,0.1);
+		margin: 0.25em 0;
 	}
 
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
+		width: fit-content;
 		margin: 0 auto;
+		min-width: 350px;
 	}
 
 	button {

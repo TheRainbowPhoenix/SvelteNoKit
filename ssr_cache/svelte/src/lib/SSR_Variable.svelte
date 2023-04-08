@@ -6,7 +6,7 @@
 
 
 
-{#if env == "ssr-cache"}
+{#if env === "ssr-cache"}
     {@html `{{ ${name} | default(${
         JSON.stringify(value)
     }, true)}}`}

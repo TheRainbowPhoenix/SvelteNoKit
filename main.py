@@ -99,10 +99,10 @@ async def ssr_index(request: Request):
 @ssr_app.get("/items", response_class=HTMLResponse)
 async def ssr_index(request: Request):
     items = [
-        "a", "b", "c", "__init__D"
+        "first item", "second item", "third item", "__init__D", "last item"
     ]
     return SSR_Template(request, "Items", {
-        "name": "My Stonks",
+        "name": "My Items list",
         "items": items,
     })
 

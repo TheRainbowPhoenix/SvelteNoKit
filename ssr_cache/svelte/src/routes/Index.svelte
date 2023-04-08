@@ -26,7 +26,7 @@
 	<button on:click={subs}>-</button>
 	<pre><SSR_Variable bind:value={count} name="count" bind:env /></pre>
 	<button on:click={add}>+</button>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<p>This was served from FastAPI with count=<SSR_Variable value={count} name="count" bind:env /></p>
 
 	<div>
 		<a href="/ssr/items">Go to Items !</a>
